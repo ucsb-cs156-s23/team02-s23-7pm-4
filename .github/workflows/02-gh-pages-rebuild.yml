@@ -80,9 +80,7 @@ jobs:
       run: |
         mkdir -p site
         cp -r frontend/docs-index/* site
-        mkdir -p site/storybook
-        cp -r frontend/docs-index/storybook_placeholder.html site/storybook/index.html
-
+       
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
