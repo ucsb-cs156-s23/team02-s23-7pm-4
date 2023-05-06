@@ -1,13 +1,11 @@
 
-title: QA Site for Documentation
+title: Documentation
 description: >- # this means to ignore newlines until "baseurl:"
   When reviewing a PR for this repo, you can see what the documentation,
   e.g. the storybook, will look like when published for the branches
   named above.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-
-repo_name: "This-should-be-overridden-by-github-actions-script"
 
 # Build settings
 theme: minima
@@ -19,8 +17,10 @@ collections:
     output: true
     permalink: /branches/:path/
 
-repo_name: "This-should-be-overridden-by-github-actions-script"
+repo_name: "TBD"
+
+
 repo: ucsb-cs156-s23/team02-s23-7pm-4
 owner: ucsb-cs156-s23
 repo_name: team02-s23-7pm-4
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-fix-docs-workflows-3","number":37,"title":"pc - another go at fixing docs workflows","url":"https://github.com/ucsb-cs156-s23/team02-s23-7pm-4/pull/37"}]
