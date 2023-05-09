@@ -1,13 +1,8 @@
 # team02-s23-7pm-4
 
-* Production: <[https://team02.dokku-12.cs.ucsb.edu]>
+* Production: <https://team02.dokku-12.cs.ucsb.edu>
 
-```
-TODO: Adjust the link to the deployed qa app 
-for your team here, then remove this TODO.
-```
-
-* QA: <https://team02-qa.dokku-xx.cs.ucsb.edu>
+* QA: <https://team02-qa.dokku-12.cs.ucsb.edu/>
 
 
 # Configuring GitHub Pages for the documentation
