@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-WebMvcTest(controllers = RestaurantController.class)
+@WebMvcTest(controllers = RestaurantController.class)
 @Import(TestConfig.class)
 public class RestaurantControllerTests extends ControllerTestCase {
     @MockBean
