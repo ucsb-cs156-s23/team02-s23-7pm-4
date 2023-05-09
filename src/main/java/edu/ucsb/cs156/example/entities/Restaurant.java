@@ -22,5 +22,5 @@ public class Restaurant {
 
     private String name;
     private String description;  
-    // add another field?
+    private String price;
 }
