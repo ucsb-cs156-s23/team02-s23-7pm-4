@@ -1,9 +1,10 @@
 package edu.ucsb.cs156.example.controllers;
 
-import edu.ucsb.cs156.example.repositories.RestaurantRepository;
+import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
 import edu.ucsb.cs156.example.ControllerTestCase;
 import edu.ucsb.cs156.example.entities.Restaurant;
+import edu.ucsb.cs156.example.repositories.RestaurantRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,45 +37,45 @@ WebMvcTest(controllers = RestaurantController.class)
 @Import(TestConfig.class)
 public class RestaurantControllerTests extends ControllerTestCase {
     @MockBean
-    UCSBDateRepository ucsbDateRepository;
+    RestaurantRepository restaurantRepository;
 
     @MockBean
     UserRepository userRepository;
 
-    // Authorization tests for /api/ucsbdates/admin/all
+    // Authorization tests for /api/restaurants/admin/all
 
     @Test
     public void logged_out_users_cannot_get_all() throws Exception {
-            mockMvc.perform(get("/api/ucsbdates/all"))
+            mockMvc.perform(get("/api/restaurants/all"))
                             .andExpect(status().is(403)); // logged out users can't get all
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void logged_in_users_can_get_all() throws Exception {
-            mockMvc.perform(get("/api/ucsbdates/all"))
+            mockMvc.perform(get("/api/restaurants/all"))
                             .andExpect(status().is(200)); // logged
     }
 
     @Test
     public void logged_out_users_cannot_get_by_id() throws Exception {
-            mockMvc.perform(get("/api/ucsbdates?id=7"))
+            mockMvc.perform(get("/api/restaurants?id=7"))
                             .andExpect(status().is(403)); // logged out users can't get by id
     }
 
-    // Authorization tests for /api/ucsbdates/post
+    // Authorization tests for /api/restaurants/post
     // (Perhaps should also have these for put and delete)
 
     @Test
     public void logged_out_users_cannot_post() throws Exception {
-            mockMvc.perform(post("/api/ucsbdates/post"))
+            mockMvc.perform(post("/api/restaurants/post"))
                             .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void logged_in_regular_users_cannot_post() throws Exception {
-            mockMvc.perform(post("/api/ucsbdates/post"))
+            mockMvc.perform(post("/api/restaurants/post"))
                             .andExpect(status().is(403)); // only admins can post
     }
 
@@ -85,24 +86,22 @@ public class RestaurantControllerTests extends ControllerTestCase {
     public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
 
             // arrange
-            LocalDateTime ldt = LocalDateTime.parse("2022-01-03T00:00:00");
-
-            UCSBDate ucsbDate = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt)
+            Restaurant restaurant = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            when(ucsbDateRepository.findById(eq(7L))).thenReturn(Optional.of(ucsbDate));
+            when(restaurantRepository.findById(eq(7L))).thenReturn(Optional.of(restaurant));
 
             // act
-            MvcResult response = mockMvc.perform(get("/api/ucsbdates?id=7"))
+            MvcResult response = mockMvc.perform(get("/api/restaurants?id=7"))
                             .andExpect(status().isOk()).andReturn();
 
             // assert
 
-            verify(ucsbDateRepository, times(1)).findById(eq(7L));
-            String expectedJson = mapper.writeValueAsString(ucsbDate);
+            verify(restaurantRepository, times(1)).findById(eq(7L));
+            String expectedJson = mapper.writeValueAsString(restaurant);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
     }
@@ -113,162 +112,151 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
             // arrange
 
-            when(ucsbDateRepository.findById(eq(7L))).thenReturn(Optional.empty());
+            when(restaurantRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
             // act
-            MvcResult response = mockMvc.perform(get("/api/ucsbdates?id=7"))
+            MvcResult response = mockMvc.perform(get("/api/restaurants?id=7"))
                             .andExpect(status().isNotFound()).andReturn();
 
             // assert
 
-            verify(ucsbDateRepository, times(1)).findById(eq(7L));
+            verify(restaurantRepository, times(1)).findById(eq(7L));
             Map<String, Object> json = responseToJson(response);
             assertEquals("EntityNotFoundException", json.get("type"));
-            assertEquals("UCSBDate with id 7 not found", json.get("message"));
+            assertEquals("Restaurant with id 7 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void logged_in_user_can_get_all_ucsbdates() throws Exception {
+    public void logged_in_user_can_get_all_restaurants() throws Exception {
 
             // arrange
-            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-
-            UCSBDate ucsbDate1 = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt1)
+            Restaurant restaurant1 = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            LocalDateTime ldt2 = LocalDateTime.parse("2022-03-11T00:00:00");
-
-            UCSBDate ucsbDate2 = UCSBDate.builder()
-                            .name("lastDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt2)
+            Restaurant restaurant2 = Restaurant.builder()
+                            .name("The Habit")
+                            .description("Burgers and fries")
+                            .price("$")
                             .build();
 
-            ArrayList<UCSBDate> expectedDates = new ArrayList<>();
-            expectedDates.addAll(Arrays.asList(ucsbDate1, ucsbDate2));
+            ArrayList<Restaurant> expectedRestaurants = new ArrayList<>();
+            expectedRestaurants.addAll(Arrays.asList(restaurant1, restaurant2));
 
-            when(ucsbDateRepository.findAll()).thenReturn(expectedDates);
+            when(restaurantRepository.findAll()).thenReturn(expectedRestaurants);
 
             // act
-            MvcResult response = mockMvc.perform(get("/api/ucsbdates/all"))
+            MvcResult response = mockMvc.perform(get("/api/restaurants/all"))
                             .andExpect(status().isOk()).andReturn();
 
             // assert
 
-            verify(ucsbDateRepository, times(1)).findAll();
-            String expectedJson = mapper.writeValueAsString(expectedDates);
+            verify(restaurantRepository, times(1)).findAll();
+            String expectedJson = mapper.writeValueAsString(expectedRestaurants);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void an_admin_user_can_post_a_new_ucsbdate() throws Exception {
+    public void an_admin_user_can_post_a_new_restaurant() throws Exception {
             // arrange
 
-            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-
-            UCSBDate ucsbDate1 = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt1)
+            Restaurant restaurant1 = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            when(ucsbDateRepository.save(eq(ucsbDate1))).thenReturn(ucsbDate1);
+            when(restaurantRepository.save(eq(restaurant1))).thenReturn(restaurant1);
 
             // act
             MvcResult response = mockMvc.perform(
-                            post("/api/ucsbdates/post?name=firstDayOfClasses&quarterYYYYQ=20222&localDateTime=2022-01-03T00:00:00")
+                            post("/api/restaurants/post?name=Freebirds&description=Burritos and nachos&price=$$")
                                             .with(csrf()))
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(ucsbDateRepository, times(1)).save(ucsbDate1);
-            String expectedJson = mapper.writeValueAsString(ucsbDate1);
+            verify(restaurantRepository, times(1)).save(restaurant1);
+            String expectedJson = mapper.writeValueAsString(restaurant1);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_can_delete_a_date() throws Exception {
+    public void admin_can_delete_a_restaurant() throws Exception {
             // arrange
 
-            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-
-            UCSBDate ucsbDate1 = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt1)
+            Restaurant restaurant1 = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            when(ucsbDateRepository.findById(eq(15L))).thenReturn(Optional.of(ucsbDate1));
+            when(restaurantRepository.findById(eq(15L))).thenReturn(Optional.of(restaurant1));
 
             // act
             MvcResult response = mockMvc.perform(
-                            delete("/api/ucsbdates?id=15")
+                            delete("/api/restaurants?id=15")
                                             .with(csrf()))
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(ucsbDateRepository, times(1)).findById(15L);
-            verify(ucsbDateRepository, times(1)).delete(any());
+            verify(restaurantRepository, times(1)).findById(15L);
+            verify(restaurantRepository, times(1)).delete(any());
 
             Map<String, Object> json = responseToJson(response);
-            assertEquals("UCSBDate with id 15 deleted", json.get("message"));
+            assertEquals("Restaurant with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_tries_to_delete_non_existant_ucsbdate_and_gets_right_error_message()
+    public void admin_tries_to_delete_non_existant_restaurant_and_gets_right_error_message()
                     throws Exception {
             // arrange
 
-            when(ucsbDateRepository.findById(eq(15L))).thenReturn(Optional.empty());
+            when(restaurantRepository.findById(eq(15L))).thenReturn(Optional.empty());
 
             // act
             MvcResult response = mockMvc.perform(
-                            delete("/api/ucsbdates?id=15")
+                            delete("/api/restaurants?id=15")
                                             .with(csrf()))
                             .andExpect(status().isNotFound()).andReturn();
 
             // assert
-            verify(ucsbDateRepository, times(1)).findById(15L);
+            verify(restaurantRepository, times(1)).findById(15L);
             Map<String, Object> json = responseToJson(response);
-            assertEquals("UCSBDate with id 15 not found", json.get("message"));
+            assertEquals("Restaurant with id 15 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_can_edit_an_existing_ucsbdate() throws Exception {
+    public void admin_can_edit_an_existing_restaurant() throws Exception {
             // arrange
 
-            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-            LocalDateTime ldt2 = LocalDateTime.parse("2023-01-03T00:00:00");
-
-            UCSBDate ucsbDateOrig = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt1)
+            Restaurant restaurantOrig = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            UCSBDate ucsbDateEdited = UCSBDate.builder()
-                            .name("firstDayOfFestivus")
-                            .quarterYYYYQ("20232")
-                            .localDateTime(ldt2)
+            Restaurant restaurantEdited = Restaurant.builder()
+                            .name("The Habit")
+                            .description("Burgers and fries")
+                            .price("$")
                             .build();
 
-            String requestBody = mapper.writeValueAsString(ucsbDateEdited);
+            String requestBody = mapper.writeValueAsString(restaurantEdited);
 
-            when(ucsbDateRepository.findById(eq(67L))).thenReturn(Optional.of(ucsbDateOrig));
+            when(restaurantRepository.findById(eq(67L))).thenReturn(Optional.of(restaurantOrig));
 
             // act
             MvcResult response = mockMvc.perform(
-                            put("/api/ucsbdates?id=67")
+                            put("/api/restaurants?id=67")
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .characterEncoding("utf-8")
                                             .content(requestBody)
@@ -276,32 +264,30 @@ public class RestaurantControllerTests extends ControllerTestCase {
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(ucsbDateRepository, times(1)).findById(67L);
-            verify(ucsbDateRepository, times(1)).save(ucsbDateEdited); // should be saved with correct user
+            verify(restaurantRepository, times(1)).findById(67L);
+            verify(restaurantRepository, times(1)).save(restaurantEdited); // should be saved with correct user
             String responseString = response.getResponse().getContentAsString();
             assertEquals(requestBody, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_cannot_edit_ucsbdate_that_does_not_exist() throws Exception {
+    public void admin_cannot_edit_restaurant_that_does_not_exist() throws Exception {
             // arrange
 
-            LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-
-            UCSBDate ucsbEditedDate = UCSBDate.builder()
-                            .name("firstDayOfClasses")
-                            .quarterYYYYQ("20222")
-                            .localDateTime(ldt1)
+            Restaurant restaurantEdited = Restaurant.builder()
+                            .name("Freebirds")
+                            .description("Burritos and nachos")
+                            .price("$$")
                             .build();
 
-            String requestBody = mapper.writeValueAsString(ucsbEditedDate);
+            String requestBody = mapper.writeValueAsString(restaurantEdited);
 
-            when(ucsbDateRepository.findById(eq(67L))).thenReturn(Optional.empty());
+            when(restaurantRepository.findById(eq(67L))).thenReturn(Optional.empty());
 
             // act
             MvcResult response = mockMvc.perform(
-                            put("/api/ucsbdates?id=67")
+                            put("/api/restaurants?id=67")
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .characterEncoding("utf-8")
                                             .content(requestBody)
@@ -309,9 +295,9 @@ public class RestaurantControllerTests extends ControllerTestCase {
                             .andExpect(status().isNotFound()).andReturn();
 
             // assert
-            verify(ucsbDateRepository, times(1)).findById(67L);
+            verify(restaurantRepository, times(1)).findById(67L);
             Map<String, Object> json = responseToJson(response);
-            assertEquals("UCSBDate with id 67 not found", json.get("message"));
+            assertEquals("Restaurant with id 67 not found", json.get("message"));
 
     }
 }
