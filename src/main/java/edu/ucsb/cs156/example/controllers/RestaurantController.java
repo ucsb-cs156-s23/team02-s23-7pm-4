@@ -60,13 +60,13 @@ public class RestaurantController extends ApiController {
     public Restaurant postRestaurant(
             @ApiParam("name") @RequestParam String name,
             @ApiParam("description") @RequestParam String description,
-            @ApiParam("temp") @RequestParam String temp)
+            @ApiParam("price") @RequestParam String price)
             throws JsonProcessingException {
 
         Restaurant restaurant = new Restaurant();
         restaurant.setName(name);
         restaurant.setDescription(description);
-        restaurant.setTemp(temp);
+        restaurant.setPrice(price);
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 
@@ -97,7 +97,7 @@ public class RestaurantController extends ApiController {
                 
                 restaurant.setName(incoming.getName());
                 restaurant.setDescription(incoming.getDescription());
-                restaurant.setTemp(incoming.getTemp());
+                restaurant.setPrice(incoming.getPrice());
 
                 restaurantRepository.save(restaurant);
 
