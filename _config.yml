@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s23/team02-s23-7pm-4
 owner: ucsb-cs156-s23
 repo_name: team02-s23-7pm-4
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjg2NzAyODU5","is_bot":false,"login":"Joshuason55","name":"Joshua Son"},"headRefName":"JoshhotelDatabase","number":38,"title":"js-added database hotel","url":"https://github.com/ucsb-cs156-s23/team02-s23-7pm-4/pull/38"}]
