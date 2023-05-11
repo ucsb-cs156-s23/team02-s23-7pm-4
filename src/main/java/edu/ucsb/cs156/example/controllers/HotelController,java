@@ -1,0 +1,105 @@
+package edu.ucsb.cs156.example.controllers;
+
+import edu.ucsb.cs156.example.entities.Hotels;
+import edu.ucsb.cs156.example.errors.EntityNotFoundException;
+import edu.ucsb.cs156.example.repositories.HotelsRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+
+@Api(description = "Hotels")
+@RequestMapping("/api/hotels")
+@RestController
+@Slf4j
+public class HotelsController extends ApiController {
+
+    @Autowired
+    HotelsRepository hotelsRepository;
+
+    @ApiOperation(value = "List all hotels")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/all")
+    public Iterable<Hotels> allHotels() {
+        Iterable<Hotels> Hotels = hotelsRepository.findAll();
+        return commons;
+    }
+
+    @ApiOperation(value = "Get a single hotel")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public Hotels getById(
+            @ApiParam("id") @RequestParam Long id) {
+        Hotels hotels = hotelsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Hotels.class, id));
+
+        return hotels;
+    }
+
+    @ApiOperation(value = "Create a new hotel")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/post")
+    public Hotels postHotels(
+        @ApiParam("name") @RequestParam String name,
+        @ApiParam("address") @RequestParam String name,
+        @ApiParam("description") @RequestParam String name,
+        )
+        {
+
+        Hotels hotels = new Hotels();
+        hotels.setName(name);
+        hotels.setAddress(address);
+        hotels.setDescription(description);
+
+
+        Hotels savedHotel = hotelsRepository.save(hotels);
+
+        return savedHotel;
+    }
+
+    @ApiOperation(value = "Delete a hotel")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteHotels(
+            @ApiParam("id") @RequestParam Long id) {
+        Hotels hotels = hotelsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(hotels.class, id));
+
+        hotelsRepository.delete(hotels);
+        return genericMessage("Hotels with id %s deleted".formatted(id));
+    }
+
+    @ApiOperation(value = "Update a single hotel")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Hotels updateHotels(
+            @ApiParam("id") @RequestParam Long id,
+            @RequestBody @Valid Hotels incoming) {
+
+        Hotels hotels = hotelsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Hotels.class, id));
+
+
+        hotels.setName(incoming.getName());  
+        hotels.setAddress(incoming.getAddress());
+        commons.setDescription(incoming.getDescription());
+
+        hotelsRepository.save(hotels);
+
+        return hotels;
+    }
+}
