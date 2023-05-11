@@ -56,9 +56,9 @@ public class RestaurantController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Restaurant postRestaurant(
-            @ApiParam("name") @RequestParam String name,
-            @ApiParam("description") @RequestParam String description,
-            @ApiParam("price") @RequestParam String price)
+            @ApiParam("name (ex: Freebirds)") @RequestParam String name,
+            @ApiParam("description (ex: Burritos and nachos)") @RequestParam String description,
+            @ApiParam("price (ex: $$)") @RequestParam String price)
             throws JsonProcessingException {
 
         Restaurant restaurant = new Restaurant();
