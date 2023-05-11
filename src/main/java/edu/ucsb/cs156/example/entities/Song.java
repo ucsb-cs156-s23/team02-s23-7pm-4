@@ -20,7 +20,7 @@ public class Song {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  private String artist;
-  private String album;  
-  private int year;
+  private String name;
+  private String artist;  
+  private String album;
 }
