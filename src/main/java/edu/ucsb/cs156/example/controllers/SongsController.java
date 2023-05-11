@@ -31,7 +31,7 @@ import javax.validation.Valid;
 public class SongsController extends ApiController {
 
     @Autowired
-    SongRepository SongRepository;
+    SongRepository songRepository;
 
     @ApiOperation(value = "List all songs")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -56,16 +56,16 @@ public class SongsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Song postSong(
+            @ApiParam("name") @RequestParam String name,
             @ApiParam("artist") @RequestParam String artist,
-            @ApiParam("album") @RequestParam String album,
-            @ApiParam("year") @RequestParam int year
+            @ApiParam("album") @RequestParam String album
             )
             {
 
         Song song = new Song();
+        song.setName(name);
         song.setArtist(artist);
         song.setAlbum(album);
-        song.setYear(year);
 
         Song savedSong = songRepository.save(song);
 
@@ -94,9 +94,9 @@ public class SongsController extends ApiController {
         Song song = songRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Song.class, id));
 
+        song.setName(incoming.getName());
         song.setArtist(incoming.getArtist());
         song.setAlbum(incoming.getAlbum());
-        song.setYear(incoming.getYear());
 
         songRepository.save(song);
 
