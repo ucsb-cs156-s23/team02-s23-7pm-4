@@ -3,7 +3,6 @@ package edu.ucsb.cs156.example.controllers;
 import edu.ucsb.cs156.example.entities.Movie;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.MovieRepository;
-import edu.ucsb.cs156.example.repositories.MovieRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -58,7 +57,7 @@ public class MovieController extends ApiController {
     @PostMapping("/post")
     public Movie postMovie(
             @ApiParam("name") @RequestParam String name,
-            @ApiParam("year") @RequestParam String year,
+            @ApiParam("year (eg. 2023)") @RequestParam String year,
             @ApiParam("summary") @RequestParam String summary)
             throws JsonProcessingException {
 
