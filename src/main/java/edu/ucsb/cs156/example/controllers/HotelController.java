@@ -55,8 +55,8 @@ public class HotelController extends ApiController {
     @PostMapping("/post")
     public Hotel postHotel(
         @ApiParam("name") @RequestParam String name,
-        @ApiParam("address") @RequestParam String name,
-        @ApiParam("description") @RequestParam String name,
+        @ApiParam("address") @RequestParam String address,
+        @ApiParam("description") @RequestParam String description,
         )
         {
 
