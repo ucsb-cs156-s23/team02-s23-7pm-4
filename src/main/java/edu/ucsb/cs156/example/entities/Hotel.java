@@ -12,14 +12,14 @@ import lombok.Builder;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Builder
 @Entity(name = "hotels")
 public class Hotel {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  
+
   private String name;
   private String address;
   private String description;
