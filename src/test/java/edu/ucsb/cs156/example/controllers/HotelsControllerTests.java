@@ -31,9 +31,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@WebMvcTest(controllers = HotelController.class)
+@WebMvcTest(controllers = HotelsController.class)
 @Import(TestConfig.class)
-public class HotelControllerTests extends ControllerTestCase {
+public class HotelsControllerTests extends ControllerTestCase {
     @MockBean
     HotelRepository hotelRepository;
 

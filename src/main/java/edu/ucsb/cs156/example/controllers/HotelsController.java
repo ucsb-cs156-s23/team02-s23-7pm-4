@@ -26,7 +26,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/hotels")
 @RestController
 @Slf4j
-public class HotelController extends ApiController {
+public class HotelsController extends ApiController {
 
     @Autowired
     HotelRepository hotelRepository;
