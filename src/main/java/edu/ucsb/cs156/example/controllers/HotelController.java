@@ -77,7 +77,7 @@ public class HotelController extends ApiController {
     public Object deleteHotel(
             @ApiParam("id") @RequestParam Long id) {
         Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(hotel.class, id));
+                .orElseThrow(() -> new EntityNotFoundException(Hotel.class, id));
 
         hotelRepository.delete(hotel);
         return genericMessage("Hotel with id %s deleted".formatted(id));
