@@ -30,9 +30,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers = MovieController.class)
+@WebMvcTest(controllers = MoviesController.class)
 @Import(TestConfig.class)
-public class MovieControllerTests extends ControllerTestCase {
+public class MoviesControllerTests extends ControllerTestCase {
 
         @MockBean
         MovieRepository movieRepository;

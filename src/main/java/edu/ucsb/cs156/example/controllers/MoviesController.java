@@ -28,7 +28,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/movies")
 @RestController
 @Slf4j
-public class MovieController extends ApiController {
+public class MoviesController extends ApiController {
 
     @Autowired
     MovieRepository movieRepository;
