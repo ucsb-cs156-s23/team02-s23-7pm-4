@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@WebMvcTest(controllers = HotelsController.class)
+@WebMvcTest(controllers = HotelController.class)
 @Import(TestConfig.class)
 public class HotelsControllerTests extends ControllerTestCase {
     @MockBean
