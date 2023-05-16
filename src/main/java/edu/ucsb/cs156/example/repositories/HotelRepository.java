@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface HotelRepository extends CrudRepository<Hotel, String> {
+public interface HotelRepository extends CrudRepository<Hotel, Long> {
  
 }
