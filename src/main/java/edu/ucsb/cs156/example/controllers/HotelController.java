@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 
-@Api(description = "Hotel")
-@RequestMapping("/api/hotel")
+@Api(description = "Hotels")
+@RequestMapping("/api/hotels")
 @RestController
 @Slf4j
-public class HotelController extends ApiController {
+public class HotelsController extends ApiController {
 
     @Autowired
     HotelRepository hotelRepository;
@@ -35,8 +35,8 @@ public class HotelController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<Hotel> allHotels() {
-        Iterable<Hotel> Hotel = hotelRepository.findAll();
-        return Hotel;
+        Iterable<Hotel> hotels = hotelRepository.findAll();
+        return hotels;
     }
 
     @ApiOperation(value = "Get a single hotel")
@@ -56,7 +56,7 @@ public class HotelController extends ApiController {
     public Hotel postHotel(
         @ApiParam("name") @RequestParam String name,
         @ApiParam("address") @RequestParam String address,
-        @ApiParam("description") @RequestParam String description,
+        @ApiParam("description") @RequestParam String description
         )
         {
 

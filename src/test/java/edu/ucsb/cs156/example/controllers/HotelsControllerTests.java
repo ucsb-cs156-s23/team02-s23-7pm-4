@@ -3,8 +3,8 @@ package edu.ucsb.cs156.example.controllers;
 import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
 import edu.ucsb.cs156.example.ControllerTestCase;
-import edu.ucsb.cs156.example.entities.Hotels;
-import edu.ucsb.cs156.example.repositories.HotelsRepository;
+import edu.ucsb.cs156.example.entities.Hotel;
+import edu.ucsb.cs156.example.repositories.HotelRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,12 +35,12 @@ import static org.mockito.Mockito.when;
 @Import(TestConfig.class)
 public class HotelsControllerTests extends ControllerTestCase {
     @MockBean
-    HotelsRepository hotelsRepository;
+    HotelRepository hotelRepository;
 
     @MockBean
     UserRepository userRepository;
 
-    // Authorization tests for /api/hotelss/admin/all
+    // Authorization tests for /api/hotels/admin/all
 
     @Test
     public void logged_out_users_cannot_get_all() throws Exception {
@@ -84,13 +84,13 @@ public class HotelsControllerTests extends ControllerTestCase {
     public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
 
             // arrange
-            Hotels hotels = Hotels.builder()
+            Hotel hotel = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            when(hotelsRepository.findById(eq(7L))).thenReturn(Optional.of(hotels));
+            when(hotelRepository.findById(eq(7L))).thenReturn(Optional.of(hotel));
 
             // act
             MvcResult response = mockMvc.perform(get("/api/hotels?id=7"))
@@ -98,8 +98,8 @@ public class HotelsControllerTests extends ControllerTestCase {
 
             // assert
 
-            verify(hotelsRepository, times(1)).findById(eq(7L));
-            String expectedJson = mapper.writeValueAsString(hotels);
+            verify(hotelRepository, times(1)).findById(eq(7L));
+            String expectedJson = mapper.writeValueAsString(hotel);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
     }
@@ -110,7 +110,7 @@ public class HotelsControllerTests extends ControllerTestCase {
 
             // arrange
 
-            when(hotelsRepository.findById(eq(7L))).thenReturn(Optional.empty());
+            when(hotelRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
             // act
             MvcResult response = mockMvc.perform(get("/api/hotels?id=7"))
@@ -118,10 +118,10 @@ public class HotelsControllerTests extends ControllerTestCase {
 
             // assert
 
-            verify(hotelsRepository, times(1)).findById(eq(7L));
+            verify(hotelRepository, times(1)).findById(eq(7L));
             Map<String, Object> json = responseToJson(response);
             assertEquals("EntityNotFoundException", json.get("type"));
-            assertEquals("Hotels with id 7 not found", json.get("message"));
+            assertEquals("Hotel with id 7 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -129,22 +129,22 @@ public class HotelsControllerTests extends ControllerTestCase {
     public void logged_in_user_can_get_all_hotels() throws Exception {
 
             // arrange
-            Hotels hotels1 = Hotels.builder()
+            Hotel hotel1 = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            Hotels hotels2 = Hotels.builder()
+            Hotel hotel2 = Hotel.builder()
                             .name("The Ritz-Carlton")
                             .address("8301 Hollister Ave")
                             .description("Overlooking the Pacific Ocean")
                             .build();
 
-            ArrayList<Hotels> expectedHotels = new ArrayList<>();
-            expectedHotelss.addAll(Arrays.asList(hotels1, hotels2));
+            ArrayList<Hotel> expectedHotels = new ArrayList<>();
+            expectedHotels.addAll(Arrays.asList(hotel1, hotel2));
 
-            when(hotelsRepository.findAll()).thenReturn(expectedHotels);
+            when(hotelRepository.findAll()).thenReturn(expectedHotels);
 
             // act
             MvcResult response = mockMvc.perform(get("/api/hotels/all"))
@@ -152,7 +152,7 @@ public class HotelsControllerTests extends ControllerTestCase {
 
             // assert
 
-            verify(hotelsRepository, times(1)).findAll();
+            verify(hotelRepository, times(1)).findAll();
             String expectedJson = mapper.writeValueAsString(expectedHotels);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
@@ -160,16 +160,16 @@ public class HotelsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void an_admin_user_can_post_a_new_hotels() throws Exception {
+    public void an_admin_user_can_post_a_new_hotel() throws Exception {
             // arrange
 
-            Hotels hotels1 = Hotels.builder()
+            Hotel hotel1 = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            when(hotelsRepository.save(eq(hotels1))).thenReturn(hotels1);
+            when(hotelRepository.save(eq(hotel1))).thenReturn(hotel1);
 
             // act
             MvcResult response = mockMvc.perform(
@@ -178,24 +178,24 @@ public class HotelsControllerTests extends ControllerTestCase {
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(hotelsRepository, times(1)).save(hotels1);
-            String expectedJson = mapper.writeValueAsString(hotels1);
+            verify(hotelRepository, times(1)).save(hotel1);
+            String expectedJson = mapper.writeValueAsString(hotel1);
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_can_delete_a_hotels() throws Exception {
+    public void admin_can_delete_a_hotel() throws Exception {
             // arrange
 
-            Hotels hotels1 = Hotels.builder()
+            Hotel hotel1 = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            when(hotelsRepository.findById(eq(15L))).thenReturn(Optional.of(hotels1));
+            when(hotelRepository.findById(eq(15L))).thenReturn(Optional.of(hotel1));
 
             // act
             MvcResult response = mockMvc.perform(
@@ -204,20 +204,20 @@ public class HotelsControllerTests extends ControllerTestCase {
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(hotelsRepository, times(1)).findById(15L);
-            verify(hotelsRepository, times(1)).delete(any());
+            verify(hotelRepository, times(1)).findById(15L);
+            verify(hotelRepository, times(1)).delete(any());
 
             Map<String, Object> json = responseToJson(response);
-            assertEquals("Hotels with id 15 deleted", json.get("message"));
+            assertEquals("Hotel with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_tries_to_delete_non_existant_hotels_and_gets_right_error_message()
+    public void admin_tries_to_delete_non_existant_hotel_and_gets_right_error_message()
                     throws Exception {
             // arrange
 
-            when(hotelsRepository.findById(eq(15L))).thenReturn(Optional.empty());
+            when(hotelRepository.findById(eq(15L))).thenReturn(Optional.empty());
 
             // act
             MvcResult response = mockMvc.perform(
@@ -226,31 +226,31 @@ public class HotelsControllerTests extends ControllerTestCase {
                             .andExpect(status().isNotFound()).andReturn();
 
             // assert
-            verify(hotelsRepository, times(1)).findById(15L);
+            verify(hotelRepository, times(1)).findById(15L);
             Map<String, Object> json = responseToJson(response);
-            assertEquals("Hotels with id 15 not found", json.get("message"));
+            assertEquals("Hotel with id 15 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_can_edit_an_existing_hotels() throws Exception {
+    public void admin_can_edit_an_existing_hotel() throws Exception {
             // arrange
 
-            Hotels hotelsOrig = Hotels.builder()
+            Hotel hotelOrig = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            Hotels hotelsEdited = Hotels.builder()
+            Hotel hotelEdited = Hotel.builder()
                             .name("The Ritz-Carlton")
                             .address("8301 Hollister Ave")
                             .description("Overlooking the Pacific Ocean")
                             .build();
 
-            String requestBody = mapper.writeValueAsString(hotelsEdited);
+            String requestBody = mapper.writeValueAsString(hotelEdited);
 
-            when(hotelsRepository.findById(eq(67L))).thenReturn(Optional.of(hotelsOrig));
+            when(hotelRepository.findById(eq(67L))).thenReturn(Optional.of(hotelOrig));
 
             // act
             MvcResult response = mockMvc.perform(
@@ -262,26 +262,26 @@ public class HotelsControllerTests extends ControllerTestCase {
                             .andExpect(status().isOk()).andReturn();
 
             // assert
-            verify(hotelsRepository, times(1)).findById(67L);
-            verify(hotelsRepository, times(1)).save(hotelsEdited); // should be saved with correct user
+            verify(hotelRepository, times(1)).findById(67L);
+            verify(hotelRepository, times(1)).save(hotelEdited); // should be saved with correct user
             String responseString = response.getResponse().getContentAsString();
             assertEquals(requestBody, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void admin_cannot_edit_hotels_that_does_not_exist() throws Exception {
+    public void admin_cannot_edit_hotel_that_does_not_exist() throws Exception {
             // arrange
 
-            Hotels hotelsEdited = Hotels.builder()
+            Hotel hotelEdited = Hotel.builder()
                             .name("The Leta")
                             .address("5650 Calle Real")
                             .description("A chic stay in easygoing Goleta")
                             .build();
 
-            String requestBody = mapper.writeValueAsString(hotelsEdited);
+            String requestBody = mapper.writeValueAsString(hotelEdited);
 
-            when(hotelsRepository.findById(eq(67L))).thenReturn(Optional.empty());
+            when(hotelRepository.findById(eq(67L))).thenReturn(Optional.empty());
 
             // act
             MvcResult response = mockMvc.perform(
@@ -293,9 +293,9 @@ public class HotelsControllerTests extends ControllerTestCase {
                             .andExpect(status().isNotFound()).andReturn();
 
             // assert
-            verify(hotelsRepository, times(1)).findById(67L);
+            verify(hotelRepository, times(1)).findById(67L);
             Map<String, Object> json = responseToJson(response);
-            assertEquals("Hotels with id 67 not found", json.get("message"));
+            assertEquals("Hotel with id 67 not found", json.get("message"));
 
     }
 }
