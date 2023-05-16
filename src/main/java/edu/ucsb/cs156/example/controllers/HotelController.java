@@ -1,13 +1,13 @@
 package edu.ucsb.cs156.example.controllers;
 
-import edu.ucsb.cs156.example.entities.Hotels;
+import edu.ucsb.cs156.example.entities.Hotel;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
-import edu.ucsb.cs156.example.repositories.HotelsRepository;
+import edu.ucsb.cs156.example.repositories.HotelRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,51 +22,51 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 
-@Api(description = "Hotels")
-@RequestMapping("/api/hotels")
+@Api(description = "Hotel")
+@RequestMapping("/api/hotel")
 @RestController
 @Slf4j
-public class HotelsController extends ApiController {
+public class HotelController extends ApiController {
 
     @Autowired
-    HotelsRepository hotelsRepository;
+    HotelRepository hotelRepository;
 
     @ApiOperation(value = "List all hotels")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
-    public Iterable<Hotels> allHotels() {
-        Iterable<Hotels> Hotels = hotelsRepository.findAll();
-        return commons;
+    public Iterable<Hotel> allHotels() {
+        Iterable<Hotel> Hotel = hotelRepository.findAll();
+        return Hotel;
     }
 
     @ApiOperation(value = "Get a single hotel")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
-    public Hotels getById(
+    public Hotel getById(
             @ApiParam("id") @RequestParam Long id) {
-        Hotels hotels = hotelsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Hotels.class, id));
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Hotel.class, id));
 
-        return hotels;
+        return hotel;
     }
 
     @ApiOperation(value = "Create a new hotel")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
-    public Hotels postHotels(
+    public Hotel postHotel(
         @ApiParam("name") @RequestParam String name,
         @ApiParam("address") @RequestParam String name,
         @ApiParam("description") @RequestParam String name,
         )
         {
 
-        Hotels hotels = new Hotels();
-        hotels.setName(name);
-        hotels.setAddress(address);
-        hotels.setDescription(description);
+        Hotel hotel = new Hotel();
+        hotel.setName(name);
+        hotel.setAddress(address);
+        hotel.setDescription(description);
 
 
-        Hotels savedHotel = hotelsRepository.save(hotels);
+        Hotel savedHotel = hotelRepository.save(hotel);
 
         return savedHotel;
     }
@@ -74,32 +74,32 @@ public class HotelsController extends ApiController {
     @ApiOperation(value = "Delete a hotel")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
-    public Object deleteHotels(
+    public Object deleteHotel(
             @ApiParam("id") @RequestParam Long id) {
-        Hotels hotels = hotelsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(hotels.class, id));
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(hotel.class, id));
 
-        hotelsRepository.delete(hotels);
-        return genericMessage("Hotels with id %s deleted".formatted(id));
+        hotelRepository.delete(hotel);
+        return genericMessage("Hotel with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single hotel")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
-    public Hotels updateHotels(
+    public Hotel updateHotel(
             @ApiParam("id") @RequestParam Long id,
-            @RequestBody @Valid Hotels incoming) {
+            @RequestBody @Valid Hotel incoming) {
 
-        Hotels hotels = hotelsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Hotels.class, id));
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Hotel.class, id));
 
 
-        hotels.setName(incoming.getName());  
-        hotels.setAddress(incoming.getAddress());
-        commons.setDescription(incoming.getDescription());
+        hotel.setName(incoming.getName());  
+        hotel.setAddress(incoming.getAddress());
+        hotel.setDescription(incoming.getDescription());
 
-        hotelsRepository.save(hotels);
+        hotelRepository.save(hotel);
 
-        return hotels;
+        return hotel;
     }
 }
