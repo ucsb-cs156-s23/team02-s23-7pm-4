@@ -31,9 +31,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@WebMvcTest(controllers = RestaurantController.class)
+@WebMvcTest(controllers = RestaurantsController.class)
 @Import(TestConfig.class)
-public class RestaurantControllerTests extends ControllerTestCase {
+public class RestaurantsControllerTests extends ControllerTestCase {
     @MockBean
     RestaurantRepository restaurantRepository;
 

@@ -29,7 +29,7 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 
-public class RestaurantController extends ApiController {
+public class RestaurantsController extends ApiController {
     @Autowired
     RestaurantRepository restaurantRepository;
 
