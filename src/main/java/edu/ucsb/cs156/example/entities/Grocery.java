@@ -16,6 +16,7 @@ import lombok.Builder;
 @Builder
 @Entity(name = "groceries")
 public class Grocery {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
