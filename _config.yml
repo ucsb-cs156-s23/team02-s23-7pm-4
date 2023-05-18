@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s23/team02-s23-7pm-4
 owner: ucsb-cs156-s23
 repo_name: team02-s23-7pm-4
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjc3NzA5MDM1","is_bot":false,"login":"nieb100","name":"ethan nguyen"},"headRefName":"Ethan-gameController","number":49,"title":"en - added controller files for games","url":"https://github.com/ucsb-cs156-s23/team02-s23-7pm-4/pull/49"}]
