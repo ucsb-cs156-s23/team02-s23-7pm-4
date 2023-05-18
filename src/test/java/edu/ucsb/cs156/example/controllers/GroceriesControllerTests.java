@@ -179,7 +179,7 @@ public class GroceriesControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/groceries/post?name=firstDayOfClasses&quarterYYYYQ=20222&localDateTime=2022-01-03T00:00:00")
+                                post("/api/groceries/post?name=Banana&price=0.29&expiration=05-17-23")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
