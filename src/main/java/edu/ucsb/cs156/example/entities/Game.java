@@ -14,14 +14,13 @@ import lombok.Builder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "groceries")
-public class Grocery {
+@Entity(name = "games")
+public class Game {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private String name;
-    private String price;  
-    private String expiration;
+  private String name;
+  private String description;  
+  private String genre;
 }

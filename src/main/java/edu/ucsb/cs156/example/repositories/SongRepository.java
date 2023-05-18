@@ -1,12 +1,12 @@
 package edu.ucsb.cs156.example.repositories;
 
-import edu.ucsb.cs156.example.entities.Grocery;
+import edu.ucsb.cs156.example.entities.Song;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface GroceryRepository extends CrudRepository<Grocery, Long> {
+public interface SongRepository extends CrudRepository<Song, Long> {
 
 }
