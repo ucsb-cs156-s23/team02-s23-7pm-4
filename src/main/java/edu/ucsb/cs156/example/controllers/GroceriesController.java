@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import java.time.LocalDateTime;
 
 @Api(description = "Groceries")
 @RequestMapping("/api/groceries")
@@ -58,30 +57,29 @@ public class GroceriesController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Grocery postGrocery(
-            @ApiParam("quarterYYYYQ") @RequestParam String quarterYYYYQ,
-            @ApiParam("name") @RequestParam String name,
-            @ApiParam("grocery (in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601)") @RequestParam("localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime)
+            @ApiParam("name (ex: Banana)") @RequestParam String name,
+            @ApiParam("price (ex: 5.99)") @RequestParam String price,
+            @ApiParam("expiration (ex: 05-18-23)") @RequestParam String expiration)
             throws JsonProcessingException {
 
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         // See: https://www.baeldung.com/spring-date-parameters
 
-        log.info("localDateTime={}", localDateTime);
 
         Grocery grocery = new Grocery();
-        grocery.setQuarterYYYYQ(quarterYYYYQ);
         grocery.setName(name);
-        grocery.setLocalDateTime(localDateTime);
+        grocery.setPrice(price);
+        grocery.setExpiration(expiration);
 
-        Grocery savedUcsbDate = groceryRepository.save(grocery);
+        Grocery savedGrocery = groceryRepository.save(grocery);
 
-        return savedUcsbDate;
+        return savedGrocery;
     }
 
     @ApiOperation(value = "Delete a Grocery")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
-    public Object deleteUCSBDate(
+    public Object deleteGrocery(
             @ApiParam("id") @RequestParam Long id) {
         Grocery grocery = groceryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Grocery.class, id));
@@ -93,16 +91,16 @@ public class GroceriesController extends ApiController {
     @ApiOperation(value = "Update a single grocery")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
-    public Grocery updateUCSBDate(
+    public Grocery updateGrocery(
             @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Grocery incoming) {
 
         Grocery grocery = groceryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Grocery.class, id));
 
-        grocery.setQuarterYYYYQ(incoming.getQuarterYYYYQ());
         grocery.setName(incoming.getName());
-        grocery.setLocalDateTime(incoming.getLocalDateTime());
+        grocery.setPrice(incoming.getPrice());
+        grocery.setExpiration(incoming.getExpiration());
 
         groceryRepository.save(grocery);
 
